@@ -1,0 +1,210 @@
+-- TAG-NR-RRC-DEFINITIONS-START
+
+NR-RRC-Definitions DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+-- ASN1START
+-- TAG-RRCSETUPREQUEST-START
+
+RRCSetupRequest ::= SEQUENCE {
+    rrcSetupRequest RRCSetupRequest-IEs
+}
+
+RRCSetupRequest-IEs ::= SEQUENCE {
+    ue-Identity InitialUE-Identity,
+    establishmentCause EstablishmentCause,
+    spare BIT STRING (SIZE (1))
+}
+
+InitialUE-Identity ::= CHOICE {
+    ng-5G-S-TMSI-Part1 BIT STRING (SIZE (39)),
+    randomValue BIT STRING (SIZE (39))
+}
+
+EstablishmentCause ::= ENUMERATED {
+    emergency, highPriorityAccess, mt-Access, mo-Signalling,
+    mo-Data, mo-VoiceCall, mo-VideoCall, mo-SMS, mps-PriorityAccess, mcs-PriorityAccess,
+    spare6, spare5, spare4, spare3, spare2, spare1
+}
+
+-- TAG-RRCSETUPREQUEST-STOP
+-- ASN1STOP
+
+-- ASN1START
+-- TAG-RRCSETUP-START
+
+RRCSetup ::= SEQUENCE {
+    rrc-TransactionIdentifier RRC-TransactionIdentifier,
+    criticalExtensions CHOICE {
+        rrcSetup RRCSetup-IEs,
+        criticalExtensionsFuture SEQUENCE {}
+    }
+}
+
+RRCSetup-IEs ::= SEQUENCE {
+    radioBearerConfig RadioBearerConfig,
+    masterCellGroup OCTET STRING (CONTAINING CellGroupConfig),
+    lateNonCriticalExtension OCTET STRING OPTIONAL,
+    nonCriticalExtension RRCSetup-v1700-IEs OPTIONAL
+}
+
+RRCSetup-v1700-IEs ::= SEQUENCE {
+    sl-ConfigDedicatedNR-r17 SL-ConfigDedicatedNR-r16 OPTIONAL,
+    sl-L2RemoteUE-Config-r17 SL-L2RemoteUE-Config-r17 OPTIONAL,
+    nonCriticalExtension SEQUENCE {} OPTIONAL
+}
+
+-- TAG-RRCSETUP-STOP
+-- ASN1STOP
+
+-- EmptyDef
+
+RadioBearerConfig ::= SEQUENCE {}
+
+SL-ConfigDedicatedNR-r16 ::= SEQUENCE {}
+
+SL-L2RemoteUE-Config-r17 ::= SEQUENCE {}
+
+
+-- RRC-TransactionIdentifier.asn
+
+RRC-TransactionIdentifier ::= INTEGER (0..3)
+
+
+-- ASN1START
+-- TAG-RRCSETUPCOMPLETE-START
+
+RRCSetupComplete ::=                SEQUENCE {
+    rrc-TransactionIdentifier           RRC-TransactionIdentifier,
+    criticalExtensions                  CHOICE {
+        rrcSetupComplete                    RRCSetupComplete-IEs,
+        criticalExtensionsFuture            SEQUENCE {}
+    }
+}
+
+RRCSetupComplete-IEs ::=            SEQUENCE {
+    selectedPLMN-Identity               INTEGER (1..maxPLMN),
+    registeredAMF                       RegisteredAMF                                   OPTIONAL,
+    guami-Type                          ENUMERATED {native, mapped}                     OPTIONAL,
+    s-NSSAI-List                        SEQUENCE (SIZE (1..maxNrofS-NSSAI)) OF S-NSSAI  OPTIONAL,
+    dedicatedNAS-Message                DedicatedNAS-Message,
+    ng-5G-S-TMSI-Value                  CHOICE {
+        ng-5G-S-TMSI                        NG-5G-S-TMSI,
+        ng-5G-S-TMSI-Part2                  BIT STRING (SIZE (9))
+    }                                                                                   OPTIONAL,
+    lateNonCriticalExtension            OCTET STRING                                    OPTIONAL,
+    nonCriticalExtension                RRCSetupComplete-v1610-IEs                      OPTIONAL
+}
+
+RRCSetupComplete-v1610-IEs ::=      SEQUENCE {
+    iab-NodeIndication-r16              ENUMERATED {true}                               OPTIONAL,
+    idleMeasAvailable-r16               ENUMERATED {true}                               OPTIONAL,
+    ue-MeasurementsAvailable-r16        UE-MeasurementsAvailable-r16                    OPTIONAL,
+    mobilityHistoryAvail-r16            ENUMERATED {true}                               OPTIONAL,
+    mobilityState-r16                   ENUMERATED {normal, medium, high, spare}        OPTIONAL,
+    nonCriticalExtension                RRCSetupComplete-v1690-IEs                      OPTIONAL
+}
+
+RRCSetupComplete-v1690-IEs ::=      SEQUENCE {
+    ul-RRC-Segmentation-r16             ENUMERATED {true}                               OPTIONAL,
+    nonCriticalExtension                RRCSetupComplete-v1700-IEs                      OPTIONAL
+}
+
+RRCSetupComplete-v1700-IEs ::=      SEQUENCE {
+    onboardingRequest-r17               ENUMERATED {true}                               OPTIONAL,
+    nonCriticalExtension                RRCSetupComplete-v1800-IEs                      OPTIONAL
+}
+
+RRCSetupComplete-v1800-IEs ::=      SEQUENCE {
+    ncr-NodeIndication-r18              ENUMERATED {true}                               OPTIONAL,
+    musim-CapRestrictionInd-r18         ENUMERATED {true}                               OPTIONAL,
+    flightPathInfoAvailable-r18         ENUMERATED {true}                               OPTIONAL,
+    measConfigReportAppLayerAvailable-r18 ENUMERATED {true}                             OPTIONAL,
+    mobileIAB-NodeIndication-r18        ENUMERATED {true}                               OPTIONAL,
+    reselectionMeasAvailable-r18        ENUMERATED {true}                               OPTIONAL,
+    nonCriticalExtension                SEQUENCE{}                                      OPTIONAL
+}
+
+RegisteredAMF ::=                   SEQUENCE {
+    plmn-Identity                       PLMN-Identity                                   OPTIONAL,
+    amf-Identifier                      AMF-Identifier
+}
+
+-- TAG-RRCSETUPCOMPLETE-STOP
+-- ASN1STOP
+
+-- ASN1START
+-- TAG-S-NSSAI-START
+
+S-NSSAI  ::=                        CHOICE{
+    sst                                 BIT STRING (SIZE (8)),
+    sst-SD                              BIT STRING (SIZE (32))
+}
+
+-- TAG-S-NSSAI-STOP
+-- ASN1STOP
+
+-- ASN1START
+-- TAG-NG-5G-S-TMSI-START
+
+NG-5G-S-TMSI ::=                         BIT STRING (SIZE (48))
+
+-- TAG-NG-5G-S-TMSI-STOP
+-- ASN1STOP
+
+-- ASN1START
+-- TAG-DEDICATED-NAS-MESSAGE-START
+
+DedicatedNAS-Message ::=        OCTET STRING
+
+-- TAG-DEDICATED-NAS-MESSAGE-STOP
+-- ASN1STOP
+
+-- ASN1START
+-- TAG-AMF-IDENTIFIER-START
+
+AMF-Identifier ::=                      BIT STRING (SIZE (24))
+
+-- TAG-AMF-IDENTIFIER-STOP
+-- ASN1STOP
+
+
+-- EmptyDefinitions 
+PLMN-Identity ::= SEQUENCE {}
+UE-MeasurementsAvailable-r16 ::= SEQUENCE{}
+
+--TerminalValues
+maxPLMN INTEGER ::= 3
+maxNrofS-NSSAI INTEGER ::= 4
+
+
+-- ASN1START
+-- TAG-RRCREJECT-START
+
+RRCReject ::=                       SEQUENCE {
+    criticalExtensions                  CHOICE {
+        rrcReject                           RRCReject-IEs,
+        criticalExtensionsFuture            SEQUENCE {}
+    }
+}
+
+RRCReject-IEs ::=                   SEQUENCE {
+    waitTime                            RejectWaitTime                                                          OPTIONAL,   -- Need N
+    lateNonCriticalExtension            OCTET STRING                                                            OPTIONAL,
+    nonCriticalExtension                SEQUENCE{}                                                              OPTIONAL
+}
+
+-- TAG-RRCREJECT-STOP
+-- ASN1STOP
+
+-- ASN1START
+-- TAG-REJECTWAITTIME-START
+
+RejectWaitTime ::=                  INTEGER (1..16)
+
+-- TAG-REJECTWAITTIME-STOP
+-- ASN1STOP
+
+
+-- TAG-NR-RRC-DEFINITIONS-STOP
+-- ASN1STOP
+END
